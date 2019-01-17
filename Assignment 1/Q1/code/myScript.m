@@ -94,17 +94,17 @@ w = waitforbuttonpress;
 disp('2nd')
 % Test Case 1: Sitting
 rot_angles = zeros(n_parts, 3);
-rot_angles(2,:) = [-90,0,0];
-rot_angles(3,:) = [90,0,0];
-rot_angles(5,:) = [-90,0,0];
-rot_angles(6,:) = [90,0,0];
-rot_angles(11,:) = [0,0,-90];
-rot_angles(12,:) = [0,-90,0];
-rot_angles(14,:) = [0,0,90];
-rot_angles(15,:) = [0,90,0];
+rot_angles(2,:) = [45,0,0];
+% rot_angles(3,:) = [90,0,0];
+% rot_angles(5,:) = [-90,0,0];
+% rot_angles(6,:) = [90,0,0];
+% rot_angles(11,:) = [0,0,-90];
+% rot_angles(12,:) = [0,-90,0];
+% rot_angles(14,:) = [0,0,90];
+% rot_angles(15,:) = [0,90,0];
 rot_angles1 = rot_angles;
 load('rot_angles.mat');
-rot_mat = angles2rot(rot_angles);
+rot_mat = angles2rot(rot_angles1);
 result_pose = transformPose(rot_mat, base_pose(:,:), kinematic_chain, hip_idx);
 plotPose(result_pose, kinematic_chain);
 w = waitforbuttonpress;

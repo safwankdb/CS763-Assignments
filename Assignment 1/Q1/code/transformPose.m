@@ -8,9 +8,9 @@ function [result_pose, composed_rot] = transformPose(rotations, pose, kinematic_
     root_node.parent = root_location;
     root_node.position = pose(root_location, :);
     root_node.children = [];
-    body_tree = [root_node];
+    body_tree = [];
 
-    for i = 1:14
+    for i = 1:15
     	body_tree = [body_tree, root_node];
     end
 
@@ -24,22 +24,26 @@ function [result_pose, composed_rot] = transformPose(rotations, pose, kinematic_
     	clear('node');
     end
 
-    % for i = 1:15
-    % 	disp(body_tree(i))
-    % end
 
-    function rotated_joint = rotate(joint_index, rotation_matrix)
-    	child_joint = joint_index;
-    	bone = body_tree(child_joint).position;
+    function rotate_joint = rotate(joint_index, rotation_matrix)
+	    if(rotation_matrix != eye(3))	
+	    	disp('Rotate Joint');
+	    	disp(joint_index)
+	    end
+    	bone = body_tree(joint_index).position;
     	rotated_bone = bone * rotation_matrix;
-    	body_tree(child_joint).position = rotated_bone;
+    	body_tree(joint_index).position = rotated_bone;
 
-    	if(child_joint != root_location && size(body_tree(child_joint).children))
-	    	for i = 1:size(body_tree(child_joint).children)
-	    		body_tree(body_tree(child_joint).children(i)).position += rotated_bone - bone;
-	    		rotate(body_tree(child_joint).children(i), rotation_matrix);
-	    	end	
-	   	end
+    	% The following code is for the case the joints are required to be rotated recursively
+
+    	% if(joint_index != root_location)
+    	% 	children = body_tree(joint_index).children;
+	    % 	for i = 1:size(children)
+	    % 		child = children(i);
+	    % 		body_tree(child).position += rotated_bone - bone;
+	    % 		rotate(child, rotation_matrix);
+	    % 	end	
+	   	% end
     end
 
     for bone = 1:15
@@ -47,15 +51,19 @@ function [result_pose, composed_rot] = transformPose(rotations, pose, kinematic_
     	rotate(joint, squeeze(rotations(bone, :, :)))
     end
 
-    result_pose = pose(:, :);
+    result_pose = zeros(16, 3);
     for i = 1:16
     	result_pose(i, :) = body_tree(i).position;
-    	j = i;
-    	while(body_tree(j).parent != body_tree(j).index)
-    		result_pose(i, :) += body_tree(body_tree(j).parent).position;
-    		j = body_tree(j).parent;
+    	parent_node = body_tree(body_tree(i).parent);
+    	while(parent_node.parent != parent_node.index)
+    		result_pose(i, :) += parent_node.position;
+    		parent_node = body_tree(parent_node.parent);
     	end
     end
+end
+
+% Below This is attempt 1. Please ignore
+
 	% bone_vector = pose(kinematic_chain(:,1),:) - pose(kinematic_chain(:,2),:);
 	% rotated_bone = zeros(15, 3);
 	% for i = 1:15
@@ -67,4 +75,3 @@ function [result_pose, composed_rot] = transformPose(rotations, pose, kinematic_
 	% 				[0, 0, 0];
 	% 				rotated_pose(root_location:15, :)
 	% 				];
-end
