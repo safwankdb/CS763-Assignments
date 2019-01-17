@@ -26,13 +26,9 @@ function [result_pose, composed_rot] = transformPose(rotations, pose, kinematic_
 
 
     function rotate_joint = rotate(joint_index, rotation_matrix)
-
     	bone = body_tree(joint_index).position;
     	rotated_bone = bone * rotation_matrix;
     	body_tree(joint_index).position = rotated_bone;
-
-    	% The following code is for the case the joints are required to be rotated recursively
-
     	if(joint_index != root_location)
     		children = body_tree(joint_index).children;
 	    	for i = 1:size(children)
@@ -57,17 +53,3 @@ function [result_pose, composed_rot] = transformPose(rotations, pose, kinematic_
     	end
     end
 end
-
-% Below This is attempt 1. Please ignore
-
-	% bone_vector = pose(kinematic_chain(:,1),:) - pose(kinematic_chain(:,2),:);
-	% rotated_bone = zeros(15, 3);
-	% for i = 1:15
-	% 	rotated_bone(i,:) = bone_vector(i,:) * transpose(squeeze(rotations(i,:,:)));
-	% end
-	% rotated_pose = rotated_bone + pose(kinematic_chain(:, 2), :);
-	% result_pose = [
-	% 				rotated_pose(1:root_location-1, :);
-	% 				[0, 0, 0];
-	% 				rotated_pose(root_location:15, :)
-	% 				];
