@@ -26,24 +26,20 @@ function [result_pose, composed_rot] = transformPose(rotations, pose, kinematic_
 
 
     function rotate_joint = rotate(joint_index, rotation_matrix)
-	    if(rotation_matrix != eye(3))	
-	    	disp('Rotate Joint');
-	    	disp(joint_index)
-	    end
+
     	bone = body_tree(joint_index).position;
     	rotated_bone = bone * rotation_matrix;
     	body_tree(joint_index).position = rotated_bone;
 
     	% The following code is for the case the joints are required to be rotated recursively
 
-    	% if(joint_index != root_location)
-    	% 	children = body_tree(joint_index).children;
-	    % 	for i = 1:size(children)
-	    % 		child = children(i);
-	    % 		body_tree(child).position += rotated_bone - bone;
-	    % 		rotate(child, rotation_matrix);
-	    % 	end	
-	   	% end
+    	if(joint_index != root_location)
+    		children = body_tree(joint_index).children;
+	    	for i = 1:size(children)
+	    		child = children(i);
+	    		rotate(child, rotation_matrix);
+	    	end	
+	   	end
     end
 
     for bone = 1:15

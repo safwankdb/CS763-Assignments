@@ -22,7 +22,7 @@ function rot_matrix = angles2rot(angles_list)
 				sind(theta3) cosd(theta3)  0;
 				0 0 1
 			   ];
-	    R = R_z * R_y * R_x;
+	    R = R_x * R_y * R_z;
 	    rot_matrix(i,:,:) = R;
 	end
 end
