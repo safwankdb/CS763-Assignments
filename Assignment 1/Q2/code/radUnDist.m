@@ -25,5 +25,4 @@ function imOut = radUnDist(imIn, k1, k2, nSteps)
     y = y*cy + cy;
 
     imOut = interp2(imIn, x, y, 'cubic');
-
 end
