@@ -4,7 +4,10 @@ function rot_matrix = angles2rot(angles_list)
     % respectively.
     rot_matrix = zeros(15,3,3);
     for i = 1:15
-    	[theta1, theta2, theta3] = num2cell(angles_list(i,:)){:};
+    	theta1=angles_list(i,1);
+        theta2=angles_list(i,2);
+        theta3=angles_list(i,3);
+        %[theta1, theta2, theta3] = angles_list(i,:);
 	    R_x = [
 	    		1 0 0;
 	    	    0 cosd(theta1) -sind(theta1);

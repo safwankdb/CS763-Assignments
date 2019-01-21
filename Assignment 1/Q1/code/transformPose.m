@@ -29,7 +29,7 @@ function [result_pose, composed_rot] = transformPose(rotations, pose, kinematic_
     	bone = body_tree(joint_index).position;
     	rotated_bone = bone * rotation_matrix;
     	body_tree(joint_index).position = rotated_bone;
-    	if(joint_index != root_location)
+    	if(joint_index ~= root_location)
     		children = body_tree(joint_index).children;
 	    	for i = 1:size(children)
 	    		child = children(i);
@@ -47,8 +47,8 @@ function [result_pose, composed_rot] = transformPose(rotations, pose, kinematic_
     for i = 1:16
     	result_pose(i, :) = body_tree(i).position;
     	parent_node = body_tree(body_tree(i).parent);
-    	while(parent_node.parent != parent_node.index)
-    		result_pose(i, :) += parent_node.position;
+    	while(parent_node.parent ~= parent_node.index)
+    		result_pose(i, :) = result_pose(i,:) + parent_node.position;
     		parent_node = body_tree(parent_node.parent);
     	end
     end
