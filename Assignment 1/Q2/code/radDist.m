@@ -21,5 +21,5 @@ function imOut = radDist(imIn, k1, k2)
     x = x*cx + cx;
     y = y*cy + cy;
     
-    imOut = interp2(imIn, x, y, 'cubic');
+    imOut = interp2(imIn, x, y, 'cubic', 1);
 end
