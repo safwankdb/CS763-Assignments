@@ -1,27 +1,33 @@
-% Check normalise2D
-original2d = [
-                0 1
-                1 0
-                1 1
-             ];
-[pts2d,T] = normalise2D(original2d);
+clear;
+clc;
+points2d = load('xy.mat');
+points2d = reshape(points2d.A, [], 2);
+points2d = [points2d, ones(size(points2d, 1), 1)]';
 
-% Check normalise3D
-original3d = [
-                0 1
-                1 0
-                0 0  
-                1 1
-             ];
-[pts3d, U] = normalise3D(original3d);
+points3d = load('xyz.mat');
+points3d = reshape(points3d.B, [], 3);
+points3d = [points3d, ones(size(points3d, 1), 1)]';
 
-[P] = calibrate(pts2d, pts3d);
-P = pinv(T) * P * U;
-P = P ./ P(3, 4);
+[points2dNew, T] = normalise2D(points2d);
 
-%Checking callibrate function
-image = P * original3d;
-image(:, 1) = image(:, 1) ./ image(3, 1);
-image(:, 2) = image(:, 2) ./ image(3, 2);
-disp(image)
-%correct since image=original2d
+[points3dNew, U] = normalise3D(points3d);
+
+P = calibrate(points2dNew, points3dNew);
+P = (T \ P) * U;
+P = P ./ P(3, 4)
+
+H_inf = P(:, 1:3);
+h = P(:, 4);
+
+X_o = -(H_inf \ h);
+[R_t, K_i] = qr(inv(H_inf));
+R = R_t'
+K = inv(K_i)
+
+pad = ones(3, 1);
+imagePoints = P * points3d;
+imagePoints = imagePoints ./ (pad * imagePoints(3, :));
+
+MSE = mean((imagePoints(:) - points2d(:)).^2) * 3;
+RMSE = sqrt(MSE)
+

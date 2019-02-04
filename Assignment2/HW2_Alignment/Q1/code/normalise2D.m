@@ -28,4 +28,5 @@ T=[
     0      mean_f -mean_f*mean_v(2,1);
     0      0       1
    ];
-pts_out = T*old_pts;
+% size(old_pts)
+pts_out = T * old_pts;
