@@ -19,4 +19,5 @@ P=P./P(3,4);
 image=P*original3d;
 image(:,1)=image(:,1)./image(3,1) ;
 image(:,2)=image(:,2)./image(3,2);
-% disp(image)
+disp(image)
+%correct since image=original2d

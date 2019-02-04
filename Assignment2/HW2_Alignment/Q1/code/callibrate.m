@@ -13,4 +13,4 @@ end
 [U,S,V]=svd(M);
 P=V(:,12)';
 P=P./P(1,12);
-P=reshape(P,[3,4]);
+P=reshape(P,[4,3])';
