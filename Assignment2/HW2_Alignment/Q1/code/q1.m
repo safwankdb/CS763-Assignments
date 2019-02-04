@@ -1,10 +1,10 @@
 clear;
 clc;
-points2d = load('xy.mat');
+points2d = load('../input/xy.mat');
 points2d = reshape(points2d.A, [], 2);
 points2d = [points2d, ones(size(points2d, 1), 1)]';
 
-points3d = load('xyz.mat');
+points3d = load('../input/xyz.mat');
 points3d = reshape(points3d.B, [], 3);
 points3d = [points3d, ones(size(points3d, 1), 1)]';
 
@@ -31,3 +31,8 @@ imagePoints = imagePoints ./ (pad * imagePoints(3, :));
 MSE = mean((imagePoints(:) - points2d(:)).^2) * 3;
 RMSE = sqrt(MSE)
 
+figure;
+imshow(imread('../input/IMG.jpeg'))
+hold on
+plot(points2d(1, :)', points2d(2, :)', 'yx', 'MarkerSize', 10)
+plot(imagePoints(1, :)', imagePoints(2, :)', 'r+', 'MarkerSize',8)
