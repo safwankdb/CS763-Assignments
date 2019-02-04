@@ -1,4 +1,4 @@
-function [P]= callibrate(pts2d, pts3d)
+function [P]= calibrate(pts2d, pts3d)
 N = size(pts2d, 2);
 M = zeros(2*N, 12);
 for i = 1:N

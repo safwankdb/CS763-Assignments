@@ -15,7 +15,7 @@ original3d = [
              ];
 [pts3d, U] = normalise3D(original3d);
 
-[P] = callibrate(pts2d, pts3d);
+[P] = calibrate(pts2d, pts3d);
 P = pinv(T) * P * U;
 P = P ./ P(3, 4);
 
