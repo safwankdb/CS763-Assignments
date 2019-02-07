@@ -1,8 +1,14 @@
 close all
 clc
 clear
-im1 = double(rgb2gray(imread('../input/flash1.jpg')))./255;
-im2 = double(rgb2gray(imread('../input/noflash1.jpg')))./255;
+im1 = double((imread('../input/barbara.png')))./255;
+im2 = double((imread('../input/negative_barbara.png')));
+im2(1:128,1:128) = im2(1:128,1:128).^0.25;
+im2(1:128,129:256) = im2(1:128,129:256).^0.33;
+im2(129:256,1:128) = sqrt(im2(129:256,1:128));
+im2(129:256,129:256) = im2(129:256,129:256).^0.33 + sqrt(im2(129:256,129:256));
+im2 = (im2-min(im2(:)))/(max(im2(:))-min(im2(:)));
+figure;imshow(im2/max(im2(:)));
 % im1=imresize(im1,0.5);
 % im2=imresize(im2,0.5);
 
