@@ -1,7 +1,0 @@
-For Barbara image, 
-Min joint entropy value 7.16 occurs at theta = -23, tx = 3
-
-For flash image,
-Min joint entropy value 6.20 occurs at theta = -23, tx = 3
-
-Although both the results are good enough to predict the actual values of the translation and rotation parameters, the overlap of Barbara image is better than the overlap of the flash images. This is because in the flash images, both images have different illuminations and also different parts of the first image have different illuminations too.
