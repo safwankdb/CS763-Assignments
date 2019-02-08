@@ -19,7 +19,7 @@ P = P ./ P(3, 4)
 H_inf = P(:, 1:3);
 h = P(:, 4);
 
-X_o = -(H_inf \ h);
+X_o = -(H_inf \ h)
 [R_t, K_i] = qr(inv(H_inf));
 R = R_t'
 K = inv(K_i)

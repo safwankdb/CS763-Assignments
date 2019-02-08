@@ -1,9 +1,11 @@
 clear;
+close all;
+clc;
 
 tic;
 
-threshold = 0.01;
-image_dir = '../input/pier';
+threshold = 0.5;
+image_dir = '../input/ledge';
 image_names = dir(fullfile(image_dir, '*.JPG'));
 
 n = numel(image_names);
@@ -31,17 +33,17 @@ for i = 2:n
       
    
    indexPairs = matchFeatures(features, previousFeatures, ...
-  'Unique', true);
-%    'MatchThreshold', 10, 'MaxRatio', 0.6, ...
-%    'Method', 'Approximate');
+  'Unique', true, ...
+    'MatchThreshold', 10, 'MaxRatio', 0.6, ...
+    'Method', 'Approximate');
    
    matchedPoints = points(indexPairs(:, 1));
    matchedPointsPrev = previousPoints(indexPairs(:, 2));
 
-%    
+% % %    
 %    figure
 %    showMatchedFeatures(img_prev, img, matchedPointsPrev, matchedPoints);
-   
+%    
    previousLocation = [matchedPointsPrev.Location, ones(size(matchedPointsPrev, 1), 1)];
    location = [matchedPoints.Location, ones(size(matchedPoints, 1), 1)];
       
@@ -54,18 +56,20 @@ for i = 1:n
         [1, image_sizes(i,2)], [1, image_sizes(i,1)]);
 end
 
-avgXLim = mean(x_limit, 2);
+if(n>2)
+    avgXLim = mean(x_limit, 2);
 
-[~, idx] = sort(avgXLim);
+    [~, idx] = sort(avgXLim);
 
-centerIdx = floor((n+1)/2);
+    centerIdx = floor((n+1)/2);
 
-centerImageIdx = idx(centerIdx);
+    centerImageIdx = idx(centerIdx);
 
-Tinv = invert(transforms(centerImageIdx));
+    Tinv = invert(transforms(centerImageIdx));
 
-for i = 1:n
-    transforms(i).T = transforms(i).T * Tinv.T;
+    for i = 1:n
+        transforms(i).T = transforms(i).T * Tinv.T;
+    end
 end
 
 for i = 1:numel(transforms)
@@ -104,5 +108,6 @@ end
 
 
 imshow(panorama);
+imsave();
 
 toc;
