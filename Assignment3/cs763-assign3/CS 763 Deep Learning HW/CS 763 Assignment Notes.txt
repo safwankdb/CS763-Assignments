@@ -1,0 +1,11 @@
+Avg Loss Sample 1: 20.365778784103
+Avg Loss Sample 2: 129.58350868834
+
+The inputs of checkModel.lua necessary for sample model 1 are,
+modelConfig_1.txt, input_sample_1.bin, gradOutput_sample_1.bin, W_sample_1.bin, B_sample_1.bin.
+
+The inputs for checkCriterion.lua for sample 1 are,
+input_criterion_sample_1.bin, target_sample_1.bin
+ 
+ 
+
