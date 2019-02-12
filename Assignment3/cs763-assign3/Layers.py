@@ -1,5 +1,10 @@
 import torch
 
+'''
+TODO
+Treat input as batch
+'''
+
 
 class Linear():
     """A Fully Connected Linear Layer"""
@@ -7,17 +12,28 @@ class Linear():
     def __init__(self, n_input, n_output):
         self.n_input = n_input
         self.n_output = n_output
-        self.W = torch.rand(n_input, n_output)
-        self.B = torch.rand(1, n_output)
-        self.gradW = torch.zeros(n_input, n_output)
-        self.gradB = torch.zeros(1, n_output)
+        self.W = torch.rand(n_output, n_input)
+        self.B = torch.rand(n_output, 1)
+        self.gradW = torch.zeros(n_output, n_input)
+        self.gradB = torch.zeros(n_output, 1)
+    """
+    Dimensions:
+
+    input, gradInput   -> batch_size x n_input
+    output, gradOutput -> batch_size x n_output
+    W, gradW           -> n_output x n_input
+    B, gradB           -> n_output x 1
+
+    """
 
     def forward(self, input):
         """Forward Pass"""
-        self.output = input @ self.W + self.B
+        self.pad = torch.ones(self.batch_size, 1)
+        self.batch_size = input.shape[0]
+        self.output = input @ self.W.t() + self.pad @ self.B.t()
         return self.output
 
-    def backwards(self, input, gradOutput):
+    def backward(self, input, gradOutput):
         """Backward Pass"""
         self.gradW = input.t() @ gradOutput
         self.gradB = torch.sum(gradOutput, axis=0, keepdims=True)
