@@ -1,7 +1,8 @@
 import torch
 
+
 class Linear():
-    """docstring for Linear"""
+    """A Fully Connected Linear Layer"""
 
     def __init__(self, n_input, n_output):
         self.n_input = n_input
@@ -11,28 +12,32 @@ class Linear():
         self.gradW = torch.zeros(n_input, n_output)
         self.gradB = torch.zeros(1, n_output)
 
+    def forward(self, input):
+        """Forward Pass"""
+        self.output = input @ self.W + self.B
+        return self.output
 
-    def forward(input):
-    	self.output = input @ self.W + self.B
-    	return self.output
-
-    def backwards(input, gradOutput)
-    	self.gradW = input.t() * gradOutput # Correct
-    	self.gradB = torch.sum(gradOutput, axis=0, keepdims=True) # Correct
-    	self.gradInput = gradOutput @ W.t() # Correct
-        return gradInput
+    def backwards(self, input, gradOutput):
+        """Backward Pass"""
+        self.gradW = input.t() @ gradOutput
+        self.gradB = torch.sum(gradOutput, axis=0, keepdims=True)
+        self.gradInput = gradOutput @ self.W.t()
+        return self.gradInput
 
 
 class ReLU():
+    """A Residual Linear Unit Activation Layer """
 
     def __init__(self):
         self.output
         self.gradInput
 
-    def forward(input):
+    def forward(self, input):
+        """Forward Pass"""
         self.output = input * (input > 0)
         return self.output
 
-    def backward(input, gradOutput)
-		self.gradInput = gradOutput * (1 * (input > 0))
-		return self.gradInput
+    def backward(self, input, gradOutput):
+        """Backward Pass"""
+        self.gradInput = gradOutput * (1 * (input > 0))
+        return self.gradInput
