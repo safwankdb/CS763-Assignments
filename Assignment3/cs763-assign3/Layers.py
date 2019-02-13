@@ -29,8 +29,8 @@ class Linear():
 
     def backward(self, input, gradOutput):
         """Backward Pass"""
-        self.gradW = input.t() @ gradOutput
-        self.gradB = torch.sum(gradOutput, axis=0, keepdims=True)
+        self.gradW = gradOutput.t() @ input
+        self.gradB = torch.sum(gradOutput, dim=0, keepdims=False).t()
         self.gradInput = gradOutput @ self.W
         return self.gradInput
 
@@ -40,19 +40,15 @@ class ReLU():
 
     def __init__(self):
         """Layer Initialization"""
-        self.output
-        self.gradInput
 
     def forward(self, input):
         """Forward Pass"""
-
-        self.output = input * (input > 0)
+        self.output = input * (input > 0).float()
         return self.output
 
     def backward(self, input, gradOutput):
         """Backward Pass"""
-
-        self.gradInput = gradOutput * (1 * (input > 0))
+        self.gradInput = gradOutput * (1.0 * (input > 0).float())
         return self.gradInput
 
 
