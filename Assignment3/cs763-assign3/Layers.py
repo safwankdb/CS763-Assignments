@@ -34,6 +34,18 @@ class Linear():
         self.gradInput = gradOutput @ self.W
         return self.gradInput
 
+    def clear_grad(self):
+    	self.W=torch.zeros(self.W.shape)
+    	self.B=torch.zeros(self.B.shape)
+
+    def print_params(self):
+    	r=self.W.shape[0]
+    	c=self.W.shape[1]
+    	for i in range(r):
+    		for j in range(c):
+    			print self.W[i][j],
+    		print
+    	
 
 class ReLU():
     """A Residual Linear Unit Activation Layer """
@@ -50,6 +62,12 @@ class ReLU():
         """Backward Pass"""
         self.gradInput = gradOutput * (1.0 * (input > 0).float())
         return self.gradInput
+
+    def clear_grad(self):
+    	pass
+
+    def print_params(self):
+    	pass
 
 
 class Convolution():
