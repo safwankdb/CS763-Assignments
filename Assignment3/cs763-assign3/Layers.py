@@ -1,35 +1,29 @@
 import torch
 
-'''
-TODO
-Treat input as batch
-'''
-
 
 class Linear():
-    """A Fully Connected Linear Layer"""
+    """
+    A Fully Connected Linear Layer. - Mohd Safwan
+
+    Dimensions:
+    input , gradInput  -> batch_size x n_input
+    output, gradOutput -> batch_size x n_output
+    W     , gradW      -> n_output   x n_input
+    B     , gradB      -> n_output   x 1
+
+    """
 
     def __init__(self, n_input, n_output):
-        self.n_input = n_input
-        self.n_output = n_output
+        """Layer Initialization"""
         self.W = torch.rand(n_output, n_input)
         self.B = torch.rand(n_output, 1)
         self.gradW = torch.zeros(n_output, n_input)
         self.gradB = torch.zeros(n_output, 1)
-    """
-    Dimensions:
-
-    input, gradInput   -> batch_size x n_input
-    output, gradOutput -> batch_size x n_output
-    W, gradW           -> n_output x n_input
-    B, gradB           -> n_output x 1
-
-    """
 
     def forward(self, input):
         """Forward Pass"""
-        self.pad = torch.ones(self.batch_size, 1)
         self.batch_size = input.shape[0]
+        self.pad = torch.ones(self.batch_size, 1)
         self.output = input @ self.W.t() + self.pad @ self.B.t()
         return self.output
 
@@ -37,7 +31,7 @@ class Linear():
         """Backward Pass"""
         self.gradW = input.t() @ gradOutput
         self.gradB = torch.sum(gradOutput, axis=0, keepdims=True)
-        self.gradInput = gradOutput @ self.W.t()
+        self.gradInput = gradOutput @ self.W
         return self.gradInput
 
 
@@ -45,15 +39,52 @@ class ReLU():
     """A Residual Linear Unit Activation Layer """
 
     def __init__(self):
+        """Layer Initialization"""
         self.output
         self.gradInput
 
     def forward(self, input):
         """Forward Pass"""
+
         self.output = input * (input > 0)
         return self.output
 
     def backward(self, input, gradOutput):
         """Backward Pass"""
+
         self.gradInput = gradOutput * (1 * (input > 0))
         return self.gradInput
+
+
+class Convolution():
+    """INCOMPLETE Convolutional Layer"""
+
+    """
+    TODO
+    - Decide Initialization parameters
+    - Implement multiple kernels
+    - Implement Backpropagation
+    """
+
+    def __init__(self, n_input, n_output, kernel_size, n_kernels):
+        """
+        Layer Initialization
+
+        kernel_size is a tuple-like object
+        """
+        self.kernel = torch.rand(kernel_size)
+
+    def convolve(image, kernels):
+        """Convolve an Image with a Kernel"""
+        assert image.shape[-1] == kernels.shape[-1]
+        res_len = len(image) - len(kernels[0]) + 1
+        depth = len(kernels)
+        result = torch.zeros(res_len, res_len, depth)
+        for row in range(res_len):
+            for col in range(res_len):
+                for k_i in range(depth):
+                    kernel = kernels[k_i]
+                    patch = image[col:col + len(kernel), row:row + len(kernel)]
+                    filtered = patch * kernel
+                    result[row, col, k_i] = torch.sum(filtered)
+        return result
