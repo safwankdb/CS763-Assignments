@@ -1,6 +1,6 @@
 import argparse
 import torchfile
-import Model
+from Model import Model
 
 argument = argparse.ArgumentParser()
 argument.add_argument("--config")
