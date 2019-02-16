@@ -5,7 +5,6 @@ class Model():
         layers are to be stored according to the order of forward propagation
         '''
         self.layers = []
-        self.input
 
     def addLayer(self, layer):
         self.layers.append(layer)
