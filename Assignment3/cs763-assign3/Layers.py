@@ -20,11 +20,11 @@ class Linear():
         self.gradW = torch.zeros(n_output, n_input)
         self.gradB = torch.zeros(n_output, 1)
 
-    def forward(self, input):
+    def forward(self, Input):
         """Forward Pass"""
-        self.batch_size = input.shape[0]
+        self.batch_size = Input.shape[0]
         self.pad = torch.ones(self.batch_size, 1)
-        self.output = input @ self.W.t() + self.pad @ self.B.t()
+        self.output = Input @ self.W.t() + self.pad @ self.B.t()
         return self.output
 
     def backward(self, input, gradOutput):

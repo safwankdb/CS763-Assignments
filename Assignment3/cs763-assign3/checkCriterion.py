@@ -13,7 +13,8 @@ inp = torch.from_numpy(inp)
 target = torchfile.load(parser.t)
 target = torch.from_numpy(target)
 
-print('Average loss for given input and target is', Criterion.forward(inp, target))
+print('Average loss for given input and target is',
+      Criterion.forward(inp, target))
 
 gradients = Criterion.backward(inp, target)
 gradients = gradients.numpy()
