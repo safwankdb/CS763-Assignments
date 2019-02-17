@@ -16,7 +16,7 @@ class Linear():
     def __init__(self, n_input, n_output):
         """Layer Initialization"""
         self.W = torch.rand(n_output, n_input)
-        self.B = torch.rand(n_output, 1).view(-1,1) #earlier it was 1D vector -> wrong
+        self.B = torch.rand(n_output, 1) #earlier it was 1D vector -> wrong
         self.gradW = torch.zeros(n_output, n_input)
         self.gradB = torch.zeros(n_output, 1)
 
@@ -28,13 +28,17 @@ class Linear():
         # print(self.W.t().size())
         # print(self.pad.size())
         # print(self.B.t().size())
-        self.output = Input @ self.W.t() + self.pad @ self.B.t()
+        self.output = Input @ self.W.t() + self.pad @ self.B.view(-1,1).t()
         return self.output
 
     def backward(self, input, gradOutput):
         """Backward Pass"""
+        # print(input.size())
+        # print(gradOutput.t().size())
         self.gradW = gradOutput.t() @ input
-        self.gradB = torch.sum(gradOutput, dim=0, keepdims=False).t()
+        self.gradB = torch.sum(gradOutput, dim=0)
+        # print(self.gradB.size())
+        # print(self.B.size())
         self.gradInput = gradOutput @ self.W
         return self.gradInput
 

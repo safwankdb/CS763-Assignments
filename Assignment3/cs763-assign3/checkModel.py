@@ -3,7 +3,7 @@ import torchfile
 import torch
 from Model import Model
 from Layers import Linear,ReLU
-
+import numpy as np
 
 argument = argparse.ArgumentParser()
 argument.add_argument("-config")
@@ -22,8 +22,9 @@ with open(parser.config) as f:
     arr = f.readlines()
     # print("ARR",arr)
     num_layers = int(arr[0].replace('\n',''))
+    i=1
     # print("NUM",num_layers)
-    for i in range(1, num_layers + 1):
+    while(num_layers>0):
         arr[i]=arr[i].replace('\n','')
         v = arr[i].split(' ')
         # print("V0",v[0])
@@ -32,17 +33,21 @@ with open(parser.config) as f:
             myModel.addLayer(ReLU())
         elif(v[0] == "linear"):
             # print("YO")
+            num_layers-=1
             inp = int(v[1])
             out = int(v[2])
             myModel.addLayer(Linear(inp, out))
-    layer_weights_path = arr[num_layers + 1]
-    layer_bias_path = arr[num_layers + 2]
+        i+=1
+    layer_weights_path = arr[i]
+    layer_bias_path = arr[i+1]
     layer_bias_path=layer_bias_path.replace('\n','')
     layer_weights_path=layer_weights_path.replace('\n','')
 
 weights = torchfile.load(layer_weights_path)
+# print(weights)
 # weights = torch.from_numpy(weights)
 bias = torchfile.load(layer_bias_path)
+# print(bias)
 # bias = torch.from_numpy(bias)
 
 index = 0
@@ -68,20 +73,22 @@ input=input.view(batch_size,-1)
 gradOutput = torchfile.load(parser.og)
 gradOutput = torch.from_numpy(gradOutput)
 gradOutput=gradOutput.float()
+# print("GRAD",gradOutput.size())
 
+# Output is verified hence forward pass is correct
 output=myModel.forward(input)
-print(output)
-torch.save(output,parser.o)
+output=output.numpy()
+output.tofile(parser.o)
 
-# gradInput=myModel.backward(gradOutput)
-# gradW=[]
-# gradB=[]
-# for layer in myModel.layers:
-#     if(type(layer) == type(Linear)):
-#         gradW.append(layer.gradW)
-#         gradB.append(layer.gradB)
-# gradB=torch.tensor(gradB)
-# gradW=torch.tensor(gradW)
+gradInput=myModel.backward(gradOutput)
+# print(gradInput)
+gradW=[]
+gradB=[]
+for layer in myModel.layers:
+    if(type(layer) == Linear):
+        gradW.append(layer.gradW)
+        gradB.append(layer.gradB)
+
 # torch.save(gradB,parser.ob)
 # torch.save(gradW,parser.ow)
 # torch.save(gradInput, parser.ig)
