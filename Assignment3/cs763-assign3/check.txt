@@ -1,0 +1,1 @@
+python3 checkModel.py -config files/modelConfig_1.txt -i files/input_sample_1.bin -og files/gradOutput_sample_1.bin -o myout_1.bin -ow myW_1.bin -ob myB_1.bin -ig mygradIn_1.bin

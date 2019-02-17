@@ -16,7 +16,7 @@ class Linear():
     def __init__(self, n_input, n_output):
         """Layer Initialization"""
         self.W = torch.rand(n_output, n_input)
-        self.B = torch.rand(n_output, 1)
+        self.B = torch.rand(n_output, 1).view(-1,1) #earlier it was 1D vector -> wrong
         self.gradW = torch.zeros(n_output, n_input)
         self.gradB = torch.zeros(n_output, 1)
 
@@ -24,6 +24,10 @@ class Linear():
         """Forward Pass"""
         self.batch_size = Input.shape[0]
         self.pad = torch.ones(self.batch_size, 1)
+        # print(Input.size()) 
+        # print(self.W.t().size())
+        # print(self.pad.size())
+        # print(self.B.t().size())
         self.output = Input @ self.W.t() + self.pad @ self.B.t()
         return self.output
 
