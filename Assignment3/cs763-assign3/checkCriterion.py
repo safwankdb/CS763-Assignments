@@ -9,11 +9,8 @@ argument.add_argument("--t")
 argument.add_argument("--ig")
 parser = argument.parse_args()
 
-myCriterion = Criterion()
-
 inp = torchfile.load(parser.i)
-
-inp = torch.from_numpy(inp)
+inp = torch.from_numpy(inp).float()
 target = torchfile.load(parser.t)
 target = torch.from_numpy(target).long()
 
