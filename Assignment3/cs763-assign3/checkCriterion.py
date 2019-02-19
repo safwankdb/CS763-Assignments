@@ -10,7 +10,7 @@ argument.add_argument("--ig")
 parser = argument.parse_args()
 
 inp = torchfile.load(parser.i)
-inp = torch.from_numpy(inp).float()
+inp = torch.from_numpy(inp).double()
 target = torchfile.load(parser.t)
 target = torch.from_numpy(target).long()
 
