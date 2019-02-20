@@ -46,4 +46,5 @@ for epoch in range(epochs):
 
     print 'Epoch', epoch, 'complete'
     print 'Training Accuracy:', correct * 100 / count, '\b%'
-    torch.save(classifier, 'Modelfile1')
+    if epoch % 10 == 0:
+        torch.save(classifier, 'Modelfile1')
