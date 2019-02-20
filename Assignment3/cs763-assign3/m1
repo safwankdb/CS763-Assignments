@@ -1,0 +1,10 @@
+7
+linear 11664 1024
+relu
+linear 1024 512
+relu
+linear 512 512
+relu
+linear 512 6
+files/W_sample_2.bin
+files/B_sample_2.bin
