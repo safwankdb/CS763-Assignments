@@ -4,9 +4,9 @@ from Criterion import Criterion
 import torchfile
 
 argument = argparse.ArgumentParser()
-argument.add_argument("--i")
-argument.add_argument("--t")
-argument.add_argument("--ig")
+argument.add_argument("-i")
+argument.add_argument("-t")
+argument.add_argument("-ig")
 parser = argument.parse_args()
 
 inp = torchfile.load(parser.i)

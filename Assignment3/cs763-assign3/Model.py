@@ -1,9 +1,11 @@
 class Model():
 
-    def __init__(self):
+    def __init__(self, isTrain):
         '''
         layers are to be stored according to the order of forward propagation
+		isTrain is true when the model is training and false otherwise
         '''
+        self.isTrain=isTrain
         self.layers = []
 
     def addLayer(self, layer):
@@ -13,7 +15,7 @@ class Model():
         cur = input
         self.input = cur
         for layer in self.layers:
-            cur = layer.forward(cur)
+            cur = layer.forward(cur,isTrain)
         return cur
 
     def clearGradParam(self):

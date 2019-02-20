@@ -1,8 +1,9 @@
 import torch
+import numpy as np
 from math import sqrt
 
 device = 'cuda:0'
-
+# dropout_p=0.8 # Denotes the probability of keeping a node
 
 class Linear():
     """
@@ -16,9 +17,10 @@ class Linear():
 
     """
 
-    def __init__(self, n_input, n_output):
+    def __init__(self, n_input, n_output, dropout_p=1.0):
         """Layer Initialization"""
         self.type = 'Linear'
+        self.dropout_p=dropout_p
         self.W_decrement = torch.zeros(n_output, n_input).double().to(device)
         self.B_decrement = torch.zeros(n_output, 1).double().to(device)
         self.W = torch.randn(n_output, n_input).double().to(device) / sqrt(n_input)
@@ -27,13 +29,19 @@ class Linear():
         self.gradW = torch.zeros_like(self.W)
         self.gradB = torch.zeros_like(self.B)
 
-    def forward(self, inp):
+    def forward(self, inp, isTrain):
         """Forward Pass"""
         self.batch_size = inp.shape[0]
+        if(isTrain):
+	        self.drop= torch.from_numpy(np.random.binomial(1,self.dropout_p,inp.shape)).double().to(device)
+	        inp=torch.dot(inp,self.drop)
         self.pad = torch.ones(self.batch_size, 1).double().to(device)
         # print(self.pad.dtype)
         self.output = torch.matmul(inp, self.W.t().to(device)) \
             + torch.matmul(self.pad, self.B.t().to(device))
+        if(not isTrain):
+        	filled=torch.from_numpy(np.ones(self.output.shape)*self.dropout_p).double().to(device)
+        	self.output=torch.dot(self.output,filled)
         # print self.output
         return self.output
 
@@ -41,7 +49,7 @@ class Linear():
         """Backward Pass"""
         self.gradW = torch.matmul(gradOutput.t(), input)
         self.gradB = torch.sum(gradOutput, dim=0).view(-1, 1)
-        self.gradInput = torch.matmul(gradOutput, self.W)
+        self.gradInput = torch.dot(self.drop,torch.matmul(gradOutput, self.W))
         return self.gradInput
 
     def clear_grad(self):
