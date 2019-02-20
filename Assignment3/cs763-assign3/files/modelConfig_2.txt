@@ -1,4 +1,4 @@
-2
+3
 linear 192 10
 relu
 linear 10 3

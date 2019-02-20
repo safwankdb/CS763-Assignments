@@ -2,8 +2,8 @@ import argparse
 import torchfile
 import torch
 from Model import Model
-from Layers import Linear,ReLU
-import numpy as np
+from Layers import Linear, ReLU
+
 
 argument = argparse.ArgumentParser()
 argument.add_argument("-config")
@@ -17,15 +17,15 @@ parser = argument.parse_args()
 
 myModel = Model()
 
-#remove occurences of /n in all strings
+# remove occurences of /n in all strings
 with open(parser.config) as f:
     arr = f.readlines()
     # print("ARR",arr)
-    num_layers = int(arr[0].replace('\n',''))
-    i=1
+    num_layers = int(arr[0].replace('\n', ''))
+    i = 1
     # print("NUM",num_layers)
-    while(num_layers>0):
-        arr[i]=arr[i].replace('\n','')
+    while(num_layers > 0):
+        arr[i] = arr[i].replace('\n', '')
         v = arr[i].split(' ')
         # print("V0",v[0])
         # print("LAST",v[0][-1])
@@ -33,15 +33,15 @@ with open(parser.config) as f:
             myModel.addLayer(ReLU())
         elif(v[0] == "linear"):
             # print("YO")
-            num_layers-=1
+            num_layers -= 1
             inp = int(v[1])
             out = int(v[2])
             myModel.addLayer(Linear(inp, out))
-        i+=1
+        i += 1
     layer_weights_path = arr[i]
-    layer_bias_path = arr[i+1]
-    layer_bias_path=layer_bias_path.replace('\n','')
-    layer_weights_path=layer_weights_path.replace('\n','')
+    layer_bias_path = arr[i + 1]
+    layer_bias_path = layer_bias_path.replace('\n', '')
+    layer_weights_path = layer_weights_path.replace('\n', '')
 
 weights = torchfile.load(layer_weights_path)
 # print(weights)
@@ -57,7 +57,7 @@ for layer in myModel.layers:
         layer.W = torch.from_numpy(weights[index]).float()
         # print(layer.W.size())
         # print(layer.W)
-        layer.B = torch.from_numpy(bias[index]).view(-1,1).float()
+        layer.B = torch.from_numpy(bias[index]).view(-1, 1).float()
         # print(layer.B.size())
         # print(layer.B)
         index += 1
@@ -65,25 +65,25 @@ for layer in myModel.layers:
 num_linear = index
 input = torchfile.load(parser.i)
 input = torch.from_numpy(input)
-input= input.float()
-batch_size=input.shape[0]
+input = input.float()
+batch_size = input.shape[0]
 # print(input)
-input=input.view(batch_size,-1)
+input = input.view(batch_size, -1)
 # print(input)
 gradOutput = torchfile.load(parser.og)
 gradOutput = torch.from_numpy(gradOutput)
-gradOutput=gradOutput.float()
+gradOutput = gradOutput.float()
 # print("GRAD",gradOutput.size())
 
 # Output is verified hence forward pass is correct
-output=myModel.forward(input)
-output=output.numpy()
+output = myModel.forward(input)
+output = output.numpy()
 output.tofile(parser.o)
 
-gradInput=myModel.backward(gradOutput)
+gradInput = myModel.backward(gradOutput)
 # print(gradInput)
-gradW=[]
-gradB=[]
+gradW = []
+gradB = []
 for layer in myModel.layers:
     if(type(layer) == Linear):
         gradW.append(layer.gradW)

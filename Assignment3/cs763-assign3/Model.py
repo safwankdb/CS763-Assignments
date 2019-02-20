@@ -1,5 +1,3 @@
-from Layers import Linear,ReLU
-
 class Model():
 
     def __init__(self):
@@ -35,5 +33,5 @@ class Model():
         for i in range(len(revLayers) - 1):
             cur = revLayers[i].backward(revLayers[i + 1].output, cur)
         if(len(revLayers) > 0):
-            cur=revLayers[len(revLayers) - 1].backward(self.input, cur)
+            cur = revLayers[len(revLayers) - 1].backward(self.input, cur)
         return cur

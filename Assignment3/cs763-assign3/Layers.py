@@ -1,4 +1,7 @@
 import torch
+from math import sqrt
+
+device = 'cuda:0'
 
 
 class Linear():
@@ -15,44 +18,45 @@ class Linear():
 
     def __init__(self, n_input, n_output):
         """Layer Initialization"""
-        self.W = torch.rand(n_output, n_input)
-        self.B = torch.rand(n_output, 1) #earlier it was 1D vector -> wrong
-        self.gradW = torch.zeros(n_output, n_input)
-        self.gradB = torch.zeros(n_output, 1)
+        self.type = 'Linear'
+        self.W_decrement = torch.zeros(n_output, n_input).double().to(device)
+        self.B_decrement = torch.zeros(n_output, 1).double().to(device)
+        self.W = torch.randn(n_output, n_input).double().to(device) / sqrt(n_input)
+        self.B = torch.randn(n_output, 1).double().to(device) / sqrt(n_input)
+        # earlier it was 1D vector -> wrong
+        self.gradW = torch.zeros_like(self.W)
+        self.gradB = torch.zeros_like(self.B)
 
-    def forward(self, Input):
+    def forward(self, inp):
         """Forward Pass"""
-        self.batch_size = Input.shape[0]
-        self.pad = torch.ones(self.batch_size, 1)
-        # print(Input.size()) 
-        # print(self.W.t().size())
-        # print(self.pad.size())
-        # print(self.B.t().size())
-        self.output = Input @ self.W.t() + self.pad @ self.B.view(-1,1).t()
+        self.batch_size = inp.shape[0]
+        self.pad = torch.ones(self.batch_size, 1).double().to(device)
+        # print(self.pad.dtype)
+        self.output = torch.matmul(inp, self.W.t().to(device)) \
+            + torch.matmul(self.pad, self.B.t().to(device))
+        # print self.output
         return self.output
 
     def backward(self, input, gradOutput):
         """Backward Pass"""
-        # print(input.size())
-        # print(gradOutput.t().size())
-        self.gradW = gradOutput.t() @ input
-        self.gradB = torch.sum(gradOutput, dim=0)
-        # print(self.gradB.size())
-        # print(self.B.size())
-        self.gradInput = gradOutput @ self.W
+        self.gradW = torch.matmul(gradOutput.t(), input)
+        self.gradB = torch.sum(gradOutput, dim=0).view(-1, 1)
+        self.gradInput = torch.matmul(gradOutput, self.W)
         return self.gradInput
 
     def clear_grad(self):
-        self.W = torch.zeros(self.W.shape)
-        self.B = torch.zeros(self.B.shape)
+        self.gradW = torch.zeros_like(self.gradW)
+        self.gradB = torch.zeros_like(self.gradB)
 
     def print_params(self):
         r = self.W.shape[0]
         c = self.W.shape[1]
+        s = ''
         for i in range(r):
             for j in range(c):
-                print(self.W[i][j])
-            print
+                s += str(self.W[i][j].item()) + ' '
+            s += str(self.B[i].item()) + '\n'
+        print s
 
 
 class ReLU():
@@ -60,15 +64,16 @@ class ReLU():
 
     def __init__(self):
         """Layer Initialization"""
+        self.type = 'ReLU'
 
     def forward(self, input):
         """Forward Pass"""
-        self.output = input * (input > 0).float()
+        self.output = input * (input > 0).double()
         return self.output
 
     def backward(self, input, gradOutput):
         """Backward Pass"""
-        self.gradInput = gradOutput * (1.0 * (input > 0).float())
+        self.gradInput = gradOutput * (1.0 * (input > 0).double())
         return self.gradInput
 
     def clear_grad(self):
