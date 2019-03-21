@@ -1,14 +1,14 @@
 import torchfile
 import torch
 
-device = 'cuda:0'
+device = 'cpu'
 
 class Data():
     
-    def __init__(self, test=False, m_train=950, m_test=250, data='data/train_data.txt', label='train_labels.txt'):
+    def __init__(self, test=False, m_train=950, m_test=250, data='data/train_data.txt', label='data/train_labels.txt'):
 
         """ Tokenize first """
-        test_data_file="test_data.txt"
+        test_data_file="data/test_data.txt"
         values=[]
         with open(data, "r") as f:
             for line in f:
@@ -17,9 +17,9 @@ class Data():
             for line in f:
                 values.append(line)
         combined=' '.join(values)
-        values=values.split(' ')
+        values=combined.split(' ')
         values=list(set(values)) # removing duplicate elements
-        print "Number of unique tokens = ",len(values)
+        print ("Number of unique tokens = ",len(values))
         self.mapping={}
         for i in range(0, len(values)):
             self.mapping[int(values[i])]=i+1
@@ -45,14 +45,16 @@ class Data():
             print('Test Mode')
             self.X=self.X[m_train:]
             self.Y=self.Y.narrow(0,m_train,m_test)
-            if(self.Y.shape[0]!=len(self.X)) print "Wrong dimensions in testing"
+            if(self.Y.shape[0]!=len(self.X)):
+                print ("Wrong dimensions in testing")
 
         else:
             self.m = m_train
             print('Train Mode')
             self.X=self.X[:m_train]
             self.Y=self.Y.narrow(0,0,m_train)
-            if(self.Y.shape[0]!=len(self.X)) print "Wrong dimensions in training"        
+            if(self.Y.shape[0]!=len(self.X)):
+                print ("Wrong dimensions in training")        
 
     def sample(self, batch_size, index):
         if index + batch_size > self.m:

@@ -1,19 +1,18 @@
 import torch
-import loadModel
 from dataset import Data
 import Criterion
 from RNN import RNN
 from Model import Model
 
 """ Currently implemented without momentum """
-device = 'cuda:0'
+device = 'cpu'
 
 trainData = Data(test=False)
 criterion = Criterion.Criterion()
 layer=RNN(154,128,2)
-model=Model(layer)
+classifier=Model(layer)
 
-batch_size = 128
+batch_size = 4
 epochs = 100
 alpha = 0.1 #generally use high Learning rate in RNN since vanishing gradients
 
@@ -38,7 +37,7 @@ for epoch in range(epochs):
         correct += torch.sum(label == y - 1).item()
         count += len(y)
 
-    print 'Epoch', epoch, 'complete'
-    print 'Training Accuracy:', correct * 100 / count, '\b%'
+    print ('Epoch', epoch, 'complete')
+    print ('Training Accuracy:', correct * 100 / count, '\b%')
     if (1 + epoch) % 10 == 0:
-        torch.save(classifier, modelName + '/model')
+        torch.save(classifier, 'model')
