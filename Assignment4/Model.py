@@ -2,19 +2,18 @@ import torch
 import numpy as np
 from math import sqrt
 
+
 class Model():
-	
-	def __init__(self, layer, numLayers=1):
-		self.numLayers=numLayers
-		self.layer=layer
 
-	def forward(self, input):
-		return self.layer.forward(input)
+    def __init__(self, layer, numLayers=1):
+        self.numLayers = numLayers
+        self.layer = layer
 
-	def backward(self, gradOut):
-		self.layer.backward(gradOut)
+    def forward(self, input):
+        return self.layer.forward(input)
 
-	def reset(self):
-		self.layer.reset()
+    def backward(self, gradOut):
+        self.layer.backward(gradOut)
 
-		
+    def reset(self):
+        self.layer.reset()
